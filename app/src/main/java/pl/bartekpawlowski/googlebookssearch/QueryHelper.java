@@ -1,7 +1,6 @@
 package pl.bartekpawlowski.googlebookssearch;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -19,8 +18,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-
-import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Helper class to handle http requests and json result parse
@@ -109,7 +106,7 @@ public final class QueryHelper {
     private static String makeHttpRequest(String urlString) throws IOException {
         URL url = createUrl(urlBuilder(urlString));
         String jsonResponse = "";
-        HttpsURLConnection httpURLConnection = null;
+        HttpURLConnection httpURLConnection = null;
         InputStream inputStream = null;
 
         if (url == null) {
@@ -117,7 +114,7 @@ public final class QueryHelper {
         }
 
         try {
-            httpURLConnection = (HttpsURLConnection) url.openConnection();
+            httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("GET");
             httpURLConnection.setConnectTimeout(1000);
             httpURLConnection.setReadTimeout(1500);
@@ -146,6 +143,10 @@ public final class QueryHelper {
 
     public static ArrayList<GoogleBook> extractGoogleBookString(String urlString, Context context) {
         ArrayList<GoogleBook> googleBookArrayList = new ArrayList<GoogleBook>();
+
+        if (urlString.isEmpty()) {
+            return googleBookArrayList;
+        }
 
         try {
             String json = makeHttpRequest(urlString);
