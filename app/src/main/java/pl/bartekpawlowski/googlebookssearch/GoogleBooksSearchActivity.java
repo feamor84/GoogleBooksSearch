@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,7 @@ public class GoogleBooksSearchActivity extends AppCompatActivity implements Load
 
         mListView = (ListView) findViewById(R.id.list);
         mListView.setEmptyView(mListTextPlaceholder);
+        mListTextPlaceholder.setText(R.string.insert_text_to_input);
 
         mUserInput = (EditText) findViewById(R.id.userInput);
 
@@ -55,12 +57,17 @@ public class GoogleBooksSearchActivity extends AppCompatActivity implements Load
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mProgressBar.setVisibility(View.VISIBLE);
-                if(getLoaderManager().getLoader(LOADER_ID) != null) {
-                    getLoaderManager().destroyLoader(LOADER_ID);
+                if(mUserInput.getText().length() != 0) {
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    mListTextPlaceholder.setText(R.string.nothing_to_display);
+                    if(getLoaderManager().getLoader(LOADER_ID) != null) {
+                        getLoaderManager().destroyLoader(LOADER_ID);
+                    }
+                    mUserInputString = mUserInput.getText().toString();
+                    getLoaderManager().initLoader(LOADER_ID, null, GoogleBooksSearchActivity.this);
+                } else {
+                    Toast.makeText(GoogleBooksSearchActivity.this, getResources().getString(R.string.empty_input), Toast.LENGTH_SHORT).show();
                 }
-                mUserInputString = mUserInput.getText().toString();
-                getLoaderManager().initLoader(LOADER_ID, null, GoogleBooksSearchActivity.this);
             }
         });
 
@@ -76,9 +83,6 @@ public class GoogleBooksSearchActivity extends AppCompatActivity implements Load
     @Override
     public void onLoadFinished(Loader<List<GoogleBook>> loader, List<GoogleBook> data) {
         mProgressBar.setVisibility(View.GONE);
-        if(loader == null) {
-            mListTextPlaceholder.setText(R.string.nothing_to_display);
-        }
 
         if(!isNetworkActive) {
             mListTextPlaceholder.setText(R.string.no_network_connection);

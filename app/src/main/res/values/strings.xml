@@ -4,5 +4,7 @@
     <!-- Strings to handle errors -->
     <string name="nothing_to_display">List is empty.</string>
     <string name="no_network_connection">Please check your internet connection.</string>
+    <string name="insert_text_to_input">Please write text above and press Search.</string>
     <string name="no_author_provided">No authors informations provided.</string>
+    <string name="empty_input">Input cannot be empty! Please insert at least one character.</string>
 </resources>

@@ -90,8 +90,14 @@ public final class QueryHelper {
         }
 
         try {
-            for (int i = 0; i < authorsArray.length(); i++) {
-                authors.append(authorsArray.getString(i));
+            if(authorsArray.length() == 1) {
+                authors.append(authorsArray.getString(0));
+            } else {
+                for (int i = 0; i < authorsArray.length(); i++) {
+                    authors.append(authorsArray.getString(i));
+                    authors.append(", ");
+                }
+                authors.delete(authorsArray.length() - 2, authorsArray.length() - 1);
             }
         } catch (JSONException e) {
             Log.e(CLASS_IDENTIFIER, "Error parsing authors array", e);

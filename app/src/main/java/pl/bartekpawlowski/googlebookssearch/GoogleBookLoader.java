@@ -6,7 +6,7 @@ import android.content.Context;
 import java.util.List;
 
 /**
- *
+ * Loader handle results from HTTP request in background
  */
 
 public class GoogleBookLoader extends AsyncTaskLoader<List<GoogleBook>> {
