@@ -97,13 +97,13 @@ public final class QueryHelper {
                     authors.append(authorsArray.getString(i));
                     authors.append(", ");
                 }
-                authors.delete(authorsArray.length() - 2, authorsArray.length() - 1);
+                authors.deleteCharAt(authors.lastIndexOf(","));
             }
         } catch (JSONException e) {
             Log.e(CLASS_IDENTIFIER, "Error parsing authors array", e);
         }
 
-        return authors.toString();
+        return authors.toString().trim();
     }
 
     private static String makeHttpRequest(String urlString) throws IOException {

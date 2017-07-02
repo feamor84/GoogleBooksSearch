@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/ItemsListContainer">
     
     <TextView
         android:id="@+id/listItemTitle"
-        style="@style/ItemsListTitle" />
+        style="@style/ItemsListTitle"
+        tools:text="Book title" />
     
     <TextView
         android:id="@+id/listItemAuthor"
-        style="@style/ItemsListAuthor" />
+        style="@style/ItemsListAuthor"
+        tools:text="Author 1, Author 2" />
 
 </LinearLayout>

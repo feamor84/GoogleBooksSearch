@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="defaultPadding">16dp</dimen>
+    <!-- List item -->
+    <dimen name="titleTextSize">18sp</dimen>
+    <dimen name="authorTextSize">14sp</dimen>
+
+    <dimen name="titleMarginBottom">8sp</dimen>
+</resources>
