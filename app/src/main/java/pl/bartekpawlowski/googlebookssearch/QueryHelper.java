@@ -152,19 +152,21 @@ public final class QueryHelper {
             String json = makeHttpRequest(urlString);
 
             JSONObject root = new JSONObject(json);
-            JSONArray items = root.getJSONArray("items");
+            JSONArray items = root.optJSONArray("items");
 
-            for (int i = 0; i < items.length(); i++) {
-                JSONObject item = items.getJSONObject(i);
-                JSONObject volumeInfo = item.getJSONObject("volumeInfo");
-                JSONArray authors = volumeInfo.optJSONArray("authors");
+            if (items != null) {
+                for (int i = 0; i < items.length(); i++) {
+                    JSONObject item = items.getJSONObject(i);
+                    JSONObject volumeInfo = item.getJSONObject("volumeInfo");
+                    JSONArray authors = volumeInfo.optJSONArray("authors");
 
-                GoogleBook tmp = new GoogleBook(
-                        volumeInfo.getString("title"),
-                        getAuthors(authors, context)
-                );
+                    GoogleBook tmp = new GoogleBook(
+                            volumeInfo.getString("title"),
+                            getAuthors(authors, context)
+                    );
 
-                googleBookArrayList.add(tmp);
+                    googleBookArrayList.add(tmp);
+                }
             }
 
         } catch (IOException e) {

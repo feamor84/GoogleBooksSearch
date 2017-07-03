@@ -25,15 +25,22 @@ public class GoogleBooksSearchActivity extends AppCompatActivity implements Load
     private final static int LOADER_ID = 0;
     private final static String LIST_VIEW_STATE = "list_view_state";
     private final static String LOG_TAG = "Main activity";
+
     private ListView mListView;
     private ProgressBar mProgressBar;
     private TextView mListTextPlaceholder;
-    private GoogleBookAdapter mGoogleBookAdapter;
     private EditText mUserInput;
     private Button mButton;
+
     private boolean isNetworkActive;
+
     private String mUserInputString;
     private Parcelable mListViewState;
+
+    private GoogleBookAdapter mGoogleBookAdapter;
+
+    private ConnectivityManager mConnectivityManager;
+    private NetworkInfo mNetworkInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +49,9 @@ public class GoogleBooksSearchActivity extends AppCompatActivity implements Load
 
         mUserInputString = "";
 
-        ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        isNetworkActive = networkInfo != null && networkInfo.isConnectedOrConnecting();
+        mConnectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
+        isNetworkActive = mNetworkInfo != null && mNetworkInfo.isConnectedOrConnecting();
 
         mProgressBar = (ProgressBar) findViewById(R.id.listProgressBar);
         mProgressBar.setVisibility(View.GONE);
@@ -62,9 +69,15 @@ public class GoogleBooksSearchActivity extends AppCompatActivity implements Load
             @Override
             public void onClick(View v) {
                 if(mUserInput.getText().length() != 0) {
-                    mUserInputString = mUserInput.getText().toString();
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    getLoaderManager().restartLoader(LOADER_ID, null, GoogleBooksSearchActivity.this);
+                    mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
+                    isNetworkActive = mNetworkInfo != null && mNetworkInfo.isConnectedOrConnecting();
+                    if (isNetworkActive) {
+                        mUserInputString = mUserInput.getText().toString();
+                        mProgressBar.setVisibility(View.VISIBLE);
+                        getLoaderManager().restartLoader(LOADER_ID, null, GoogleBooksSearchActivity.this);
+                    } else {
+                        mGoogleBookAdapter.clear();
+                    }
                 } else {
                     Toast.makeText(GoogleBooksSearchActivity.this, getResources().getString(R.string.empty_input), Toast.LENGTH_SHORT).show();
                 }
@@ -81,7 +94,6 @@ public class GoogleBooksSearchActivity extends AppCompatActivity implements Load
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mListView = (ListView) findViewById(R.id.list);
         mListViewState = mListView.onSaveInstanceState();
         outState.putParcelable(LIST_VIEW_STATE, mListViewState);
         Log.i(LOG_TAG, "onSaveInstanceState with " + mListViewState.toString());
@@ -114,11 +126,13 @@ public class GoogleBooksSearchActivity extends AppCompatActivity implements Load
 
         mGoogleBookAdapter.clear();
 
+        Log.i(LOG_TAG, "Internet connection state: " + Boolean.toString(isNetworkActive));
+
         if(!isNetworkActive) {
             mListTextPlaceholder.setText(R.string.no_network_connection);
         }
 
-        if (data.isEmpty() && !mUserInputString.isEmpty()) {
+        if (data.isEmpty() && !mUserInputString.isEmpty() && isNetworkActive) {
             mListTextPlaceholder.setText(R.string.nothing_to_display);
         }
 
